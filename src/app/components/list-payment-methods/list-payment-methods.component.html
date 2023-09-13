@@ -1,0 +1,123 @@
+<header>
+  <h2>Metodos de pago</h2>
+  <button (click)="openModalCreateMethod()" class="open-modal-btn">Agregar metodo de pago</button>
+</header>
+<div class="tableAndPagination">
+  <table *ngIf="!loading">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let method of paymentMethods">
+        <td>{{ method.id }}</td>
+        <td>{{ method.name }}</td>
+        <td>{{ method.description }}</td>
+        <td>
+          <span [ngClass]="{'statusInactivo': method.status_id === 1, 'statusActivo': method.status_id === 2}">
+            {{ method.status_id === 1 ? 'Inactivo' : 'Activo' }}</span>
+        </td>
+        <td class="actions-btns">
+          <button class="edit" (click)="openModalEditMethod(method.id)"><img src="../../../assets/svg/edit.svg"
+              alt="edit buttonEdit"></button>
+          <button class="view" (click)="openModalMethod(method.id)"><img src="../../../assets/svg/eye.svg"
+              alt="view buttonView"></button>
+          <button class="delete" (click)="deleteMethod(method.id)"><img src="../../../assets/svg/delete.svg"
+              alt="delete buttonDelete"></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="loader" *ngIf="loading"></div>
+  <div class="pagination">
+    <button (click)="loadPageData(currentPage - 1)" [disabled]="currentPage === 1" class="btn-back-page"><img
+        src="../../../assets/svg/back.svg"></button>
+    <span>{{ currentPage }} de {{ totalPages }}</span>
+    <button (click)="loadPageData(currentPage + 1)" [disabled]="currentPage === totalPages" class="btn-next-page"><img
+        src="../../../assets/svg/next.svg"></button>
+  </div>
+</div>
+
+
+
+<!--Modal para crear un metodo de pago-->
+<div class="modal" [ngClass]="{'openModal': modalIsOpen}">
+  <div class="modalContainer">
+    <h3>Crear nuevo metodo de pago</h3>
+    <form (submit)="createPaymentMethod()">
+      <div>
+        <label for="name">Nombre: </label>
+        <input type="text" id="name" name="name" [(ngModel)]="nuevoMetodoPago.name" required>
+      </div>
+      <div>
+        <label for="description">Descripcion: </label>
+        <input type="text" id="description" name="description" [(ngModel)]="nuevoMetodoPago.description" required>
+      </div>
+      <section class="modal-section-btns">
+        <button type="button" class="close-modal-btn" (click)="closeModalCreateMethod()">Cerrar</button>
+        <button type="submit" class="submit-modal-btn">Crear</button>
+      </section>
+    </form>
+  </div>
+</div>
+
+
+<!--Modal para editar un metodo de pago-->
+<div class="modal" [ngClass]="{'openModal': modalEditIsOpen}">
+  <div class="modalContainer">
+    <h3>Editar metodo de pago</h3>
+    <form (submit)="updatePaymentMethod()">
+      <div>
+        <label for="name">Nombre: </label>
+        <input type="text" id="name" name="name" [(ngModel)]="dataToEdit.name" required>
+      </div>
+      <div>
+        <label for="description">Descripcion: </label>
+        <input type="text" id="description" name="description" [(ngModel)]="dataToEdit.description" required>
+      </div>
+      <div>
+        <label for="status">Estado</label>
+        <select [(ngModel)]="dataToEdit.status_id" id="status" name="status" required>
+          <option [value]="1">Inactivo</option>
+          <option [value]="2">Activo</option>
+        </select>
+      </div>
+      <section class="modal-section-btns">
+        <button type="button" class="close-modal-btn" (click)="closeModalEditMethod()">Cerrar</button>
+        <button type="submit" class="submit-modal-btn">Actualizar</button>
+      </section>
+    </form>
+  </div>
+</div>
+
+<!--Modal para ver un metodo de pago-->
+<div class="modal" [ngClass]="{'openModal': modalMethodIsOpen}">
+  <div class="modalContainer">
+    <div class="methodInfo">
+      <section>
+        <p>ID:</p>
+        <p>{{methodToOpen.id}}</p>
+      </section>
+      <section>
+        <p>Nombre:</p>
+        <p>{{methodToOpen.name}}</p>
+      </section>
+      <section>
+        <p>Descripcion:</p>
+        <p>{{methodToOpen.description}}</p>
+      </section>
+      <section>
+        <p>Estado:</p>
+        <p>{{ methodToOpen.status_id === 1 ? 'Inactivo' : 'Activo' }}</p>
+      </section>
+    </div>
+    <section class="modal-section-btns">
+      <button class="close-modal-btn" (click)="closeModalMethod()">Cerrar</button>
+    </section>
+  </div>
+</div>
